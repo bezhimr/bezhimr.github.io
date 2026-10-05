@@ -1,0 +1,19 @@
+/* The paused brush pen (js/sheet/brush.js): in the preview, the model and
+   tracing glyphs are Klee One text, with the stroke numbers in an SVG over it.
+   The printout draws them from outlines and needs none of this. */
+
+/* The glyph's baseline must land where the printout's does, 91.74/109 of the
+   box down. Font size 0 on the wrapper keeps the line's strut out of the way;
+   line height 0 puts the text's baseline (ascent - descent) / 2 = .436em below
+   the top of its line (Klee One's metrics); the padding supplies the rest:
+   91.74/109 box - .436 x 98/109 box - the .3mm border = 49/109 box - .3mm. */
+.preview .box .g {
+  height: 100%;
+  padding-top: calc(var(--box) * 49 / 109 - .3mm);
+  font-size: 0;
+  line-height: 0;
+  text-align: center;
+}
+.preview .box .g > span { font: 600 calc(var(--box) * 98 / 109) / 0 "Klee One", serif; color: #000 }
+.preview .box .t { opacity: var(--gray) }
+.preview .box svg.over { position: absolute; inset: 0 }

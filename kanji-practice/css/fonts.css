@@ -1,0 +1,6 @@
+/* Klee One and Zen Kaku Gothic New, subset to the characters the app uses by tools/build.py. */
+
+@font-face { font-family: "Klee One"; font-weight: 400; font-display: swap; src: url("../fonts/KleeOne-400.woff2") format("woff2") }
+@font-face { font-family: "Klee One"; font-weight: 600; font-display: swap; src: url("../fonts/KleeOne-600.woff2") format("woff2") }
+@font-face { font-family: "Zen Kaku Gothic New"; font-weight: 400; font-display: swap; src: url("../fonts/ZenKakuGothicNew-400.woff2") format("woff2") }
+@font-face { font-family: "Zen Kaku Gothic New"; font-weight: 700; font-display: swap; src: url("../fonts/ZenKakuGothicNew-700.woff2") format("woff2") }

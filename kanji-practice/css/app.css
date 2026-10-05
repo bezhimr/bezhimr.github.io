@@ -1,0 +1,303 @@
+/* Everything around the sheet: action buttons, character picker, settings panel. */
+
+:root {
+  --bg: #E4E8EB;
+  --panel: #FFFFFF;
+  --ink: #1A1D22;
+  --muted: #5C6671;
+  --line: #CBD2D8;
+  --chip: #EEF1F3;
+  --shu: #C4342A;       /* 朱 — the red used for marks and selection */
+  --shu-ink: #FFFFFF;
+  --shu-soft: #F7E0DD;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1B1F26;
+    --panel: #252A32;
+    --ink: #E7E9ED;
+    --muted: #9CA6B1;
+    --line: #3A424C;
+    --chip: #2D333C;
+    --shu: #E0564B;
+    --shu-ink: #1B1F26;
+    --shu-soft: #3B2729;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+button, input, select, textarea { font: inherit; color: inherit }
+a { color: var(--shu) }
+
+/* --- buttons --- */
+
+.btn {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.btn:hover { border-color: var(--muted) }
+.btn.primary { background: var(--shu); border-color: var(--shu); color: var(--shu-ink); font-weight: 700 }
+
+.link { border: none; background: none; color: var(--shu); cursor: pointer; padding: 2px 4px; font-size: 13px }
+
+/* --- layout --- */
+
+main {
+  display: grid;
+  grid-template-columns: minmax(330px, 430px) 1fr;
+  gap: 20px;
+  padding: 20px;
+  align-items: start;
+}
+@media (max-width: 900px) { main { grid-template-columns: 1fr; padding: 14px } }
+
+.controls { display: flex; flex-direction: column; gap: 16px; min-width: 0 }
+/* The controls are pinned and scroll on their own; the page scrolls the sheet.
+   Their column has 16px spare for the scrollbar. */
+@media (min-width: 901px) {
+  main { grid-template-columns: minmax(346px, 446px) 1fr }
+  .controls {
+    position: sticky;
+    top: 20px;
+    max-height: calc(100dvh - 40px);
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+    padding-right: 4px;
+    scrollbar-width: thin;
+  }
+}
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px }
+.panel h2 { font-size: 15px; font-weight: 700; margin: 0 0 10px }
+
+/* --- the panel's two views --- */
+
+.views { display: flex; gap: 18px; border-bottom: 1px solid var(--line); margin-bottom: 10px }
+.view {
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: none;
+  padding: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+}
+.view[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--shu) }
+.view small { color: var(--shu); font-weight: 700 }
+
+.selbar { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 12px }
+.selbar .link { flex: none; white-space: nowrap }
+.status { margin: 0; color: var(--muted); font-size: 13px }
+.status.warn { color: var(--shu) }
+
+/* --- character picker --- */
+
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px }
+.tab {
+  border: 1px solid transparent;
+  background: var(--chip);
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.tab[aria-selected="true"] { background: var(--ink); color: var(--panel) }
+/* How many of the tab's characters are selected. */
+.tab small { color: var(--shu); font-weight: 700 }
+
+/* .g = a group button (a whole list, a kana row). */
+.g {
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.g.part { border-color: var(--shu); color: var(--shu) }             /* some of the group is selected */
+.g.full { background: var(--shu); border-color: var(--shu); color: var(--shu-ink) }
+
+/* .ch = one selectable character. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 4px;
+}
+.ch {
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0;
+  font-family: "Klee One", serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1;
+}
+.ch:hover { border-color: var(--muted) }
+.ch.on { background: var(--shu-soft); border-color: var(--shu); color: var(--shu) }
+
+/* A numbered section header, across the grid. */
+.sec {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0 2px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.sec:first-child { padding-top: 0 }
+/* The All toggle in a header: a small link, ticked once the whole list is selected. */
+.sec .g { border: none; padding: 0; background: none; font-size: 12px; color: var(--shu) }
+.sec .g.full { background: none; color: var(--shu); font-weight: 700 }
+.sec .g.full::before { content: "✓ " }
+.grid.extras { margin-top: 14px }
+
+/* Row button, then a i u e o. */
+.kana { display: grid; grid-template-columns: repeat(6, minmax(0, 46px)); gap: 4px }
+.kana .g { aspect-ratio: 1; padding: 0; font-family: "Klee One", serif; font-size: 20px; font-weight: 600 }
+.kana .g:first-child { font-family: inherit; font-size: 13px }
+.kana .col { display: grid; place-items: center; color: var(--muted); font-size: 13px }
+
+textarea {
+  width: 100%;
+  min-height: 110px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  padding: 8px;
+  font-family: "Klee One", serif;
+  font-size: 20px;
+}
+
+.sub { display: block; color: var(--muted); font-size: 13px; margin: 12px 0 6px }
+.body > .sub:first-child { margin-top: 0 }
+#pasteadd { margin-top: 8px }
+.note { color: var(--muted); font-size: 13px; margin: 8px 0 0 }
+.note.warn { color: var(--shu) }
+.about { font-size: 13px; color: var(--muted); margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--line) }
+.about b { color: var(--ink); font-weight: 700 }
+
+/* --- settings --- */
+
+.row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 5px 0 }
+.row.off { opacity: .45 }
+.row[hidden] { display: none }
+.row input[type=number] { width: 64px; border: 1px solid var(--line); border-radius: 5px; background: transparent; padding: 3px 6px }
+.row select { border: 1px solid var(--line); border-radius: 5px; background: var(--panel); padding: 3px 6px }
+.row .hint { color: var(--muted); font-size: 12px; grid-column: 1 / -1; margin-top: -4px }
+.range { display: flex; align-items: center; gap: 8px }
+.range input { width: 130px; accent-color: var(--shu) }
+.range output { min-width: 3.2em; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums }
+.checks { display: grid; gap: 2px; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--line) }
+.checks label { display: flex; gap: 9px; align-items: center; padding: 3px 0; cursor: pointer }
+.checks input { accent-color: var(--shu); width: 16px; height: 16px }
+.checks label.off { opacity: .45; cursor: default }
+
+.credits dl { margin: 0; display: grid; gap: 10px; font-size: 13px }
+.credits dt { font-weight: 700 }
+.credits dd { margin: 0; color: var(--muted) }
+.credits p { font-size: 13px; color: var(--muted); margin: 12px 0 0 }
+
+.license { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px }
+.license summary { cursor: pointer; color: var(--shu); font-weight: 700 }
+.license p, .license li { color: var(--ink) }
+.license b { font-weight: 700 }
+.license ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 6px }
+.license .legal { color: var(--muted) }
+
+/* --- sheet preview --- */
+
+/* The preview, with a rail of buttons in its own column beside it. */
+.previewcol { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start }
+.preview { overflow-x: auto; padding-bottom: 8px }
+.preview .sheet { box-shadow: 0 1px 2px rgba(0, 0, 0, .08), 0 10px 30px rgba(0, 0, 0, .14) }
+
+/* Preview only: CSS cross guides instead of SVG ones. */
+.preview .box.x {
+  background:
+    linear-gradient(#93B9C4 55%, transparent 0) 50% 0 / .2mm 2mm repeat-y,
+    linear-gradient(90deg, #93B9C4 55%, transparent 0) 0 50% / 2mm .2mm repeat-x;
+}
+
+/* Off screen, not display: none: it must be laid out to print. */
+#printout { position: fixed; top: 0; left: -10000px }
+
+.rail { position: sticky; top: 20px; display: flex; flex-direction: column; gap: 6px }
+.rbtn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 64px;
+  padding: 9px 0 7px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 11px;
+  cursor: pointer;
+}
+.rbtn:hover { border-color: var(--muted) }
+.rbtn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round }
+.rbtn.primary { background: var(--shu); border-color: var(--shu); color: var(--shu-ink); font-weight: 700 }
+/* A dot on Generate while the sheet lags behind the selection. */
+.rbtn.stale::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--shu-ink);
+  box-shadow: 0 0 0 2px var(--shu);
+}
+
+/* One column: the preview is far below the controls, so pin the rail to the
+   bottom corner of the screen as a row instead. */
+@media (max-width: 900px) {
+  .previewcol { display: block }
+  .rail { position: fixed; top: auto; bottom: 14px; right: 14px; z-index: 5; flex-direction: row }
+  .rbtn { box-shadow: 0 2px 10px rgba(0, 0, 0, .18) }
+}
+
+/* Placeholder shown before a sheet is generated. */
+.sheet .blank {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #7a838c;
+  text-align: center;
+}
+.sheet .blank b { font-family: "Klee One", serif; font-size: 64px; color: #d8dde1; font-weight: 600; line-height: 1 }
+
+@media print {
+  html, body { background: #fff }
+  .rail, .controls, .preview { display: none !important }
+  main, .previewcol { display: block; padding: 0 }
+  #printout { position: static }
+}

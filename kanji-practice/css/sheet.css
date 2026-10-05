@@ -1,0 +1,75 @@
+/* The printable sheet, also inlined into saved sheets by js/export.js.
+   js/sheet/layout.js paginates with the same sizes: the page below, and the --cap,
+   --gap and --credit it sets on .pages. */
+
+@page { size: A4; margin: 0 }
+
+.pages { display: flex; flex-direction: column; align-items: center; gap: 8mm }
+
+.sheet, .sheet * { box-sizing: border-box }
+.sheet {
+  width: 210mm;
+  height: 296mm;   /* PAGE_HEIGHT in js/sheet/constants.js */
+  padding: 12mm;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  color: #1a1a1a;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* The glyph outlines every box draws with <use>. Must not be display: none. */
+.defs { position: absolute; width: 0; height: 0; overflow: hidden }
+
+/* One character: its caption plus its row of boxes. */
+.block { flex: none; margin-bottom: var(--gap) }
+
+/* Always exactly one line, so every block has the same height: a long
+   meaning is cut short with an ellipsis instead of wrapping. */
+.cap {
+  height: var(--cap);
+  display: flex;
+  gap: 3.5mm;
+  align-items: baseline;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 8pt;
+  line-height: 1.35;
+  color: #444;
+}
+.cap > * { flex: none }
+.cap .k { font-family: "Klee One", serif; font-weight: 600; font-size: 11pt; color: #111 }
+/* An outline instead of text, one em square. Its baseline sits .12em above the
+   bottom, so the negative margin lines it up with the text beside it. */
+.cap svg.k { width: 1em; height: 1em; margin-bottom: -.12em; fill: #111 }
+.cap .m { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: #666 }
+
+/* Boxes share borders: each is nudged up and left by one border width. */
+.boxes { display: flex; flex-wrap: wrap; padding: .3mm 0 0 .3mm }
+.box {
+  position: relative;
+  width: var(--box);
+  height: var(--box);
+  border: .3mm solid #6E8793;
+  margin: -.3mm 0 0 -.3mm;
+}
+.box svg { display: block; width: 100%; height: 100% }
+
+.credit {
+  flex: none;
+  height: var(--credit);
+  margin: auto 0 0;
+  padding-top: 3mm;
+  overflow: hidden;
+  font-size: 6.5pt;
+  line-height: 1.4;
+  color: #888;
+}
+
+@media print {
+  .pages { display: block }
+  .sheet { margin: 0; break-after: page }
+  .sheet:last-child { break-after: auto }
+}
