@@ -39,8 +39,8 @@ function charButton(char) {
 export function renderTabs() {
   tabsEl.innerHTML = T.TABS.map(([key, label]) => {
     const count = charsOfTab(key).filter(isSelected).length;
-    return `<button class="tab" aria-selected="${state.tab === key}" data-tab="${key}">`
-      + `${label}${count ? ` <small>${count}</small>` : ''}</button>`;
+    const has = count ? ` has" title="${T.SELECTED(count)}` : '';
+    return `<button class="tab${has}" aria-selected="${state.tab === key}" data-tab="${key}">${label}</button>`;
   }).join('');
 }
 

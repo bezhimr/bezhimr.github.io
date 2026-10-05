@@ -76,18 +76,19 @@ export const boxesHint = (perLine, boxes, lines, tooWide, maxBox) =>
   + `Each character uses ${plural(boxes, 'box', 'boxes')} (${plural(lines, 'line')}).`
   + (tooWide ? ` Boxes over ${maxBox} mm are wider than the page and get cut off.` : '');
 
-/* --- the status line --- */
+/* --- selection and sheet state --- */
 
 const LIST_MAX = 20;
 const listOf = chars => chars.slice(0, LIST_MAX).join(' ')
   + (chars.length > LIST_MAX ? ` and ${chars.length - LIST_MAX} more` : '');
 
+export const SELECTED = n => `${n} selected`;
+
+/* Tooltips on the Generate button. */
 export const STATUS = {
-  notGenerated: n => `${n} selected. Press Generate to lay them out.`,
+  upToDate: 'Lay out the selected characters',
   stale: 'Selection changed. Press Generate to update the sheet.',
-  shows: n => `Sheet shows ${plural(n, 'character')}. Layout changes apply right away.`,
   undrawn: chars => ` Not drawn, the liner has no stroke data for ${listOf(chars)}.`,
-  nothing: 'Select characters and generate a sheet first.',
 };
 
 /* --- the sheet --- */

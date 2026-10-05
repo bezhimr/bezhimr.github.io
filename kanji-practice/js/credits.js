@@ -10,7 +10,7 @@ export const LICENSES = {
   ccBySa3: { name: 'CC BY-SA 3.0', url: 'https://creativecommons.org/licenses/by-sa/3.0/' },
   ccBySa4: { name: 'CC BY-SA 4.0', url: 'https://creativecommons.org/licenses/by-sa/4.0/' },
   edrdg:   { name: 'EDRDG licence', url: 'https://www.edrdg.org/edrdg/licence.html' },
-  ofl:     { name: 'SIL Open Font License 1.1', url: 'https://openfontlicense.org/' },
+  ofl:     { name: 'SIL OFL 1.1', url: 'https://openfontlicense.org/' },
 };
 const lic = (key) => a(LICENSES[key].url, LICENSES[key].name);
 
@@ -28,17 +28,13 @@ export const INSPIRED_BY_HTML = 'Inspired by '
 /** Label of the collapsible block holding SOURCES and SOURCES_NOTE. */
 export const DETAILS_SUMMARY = 'License details';
 
-/** Inside the details block: [what it is used for, credit as HTML]. */
+/** Inside the details block: one short line of HTML per source and its license. */
 export const SOURCES = [
-  ['Stroke order and stroke paths',
-    `${a('https://kanjivg.tagaini.net/', 'KanjiVG')} © Ulrich Apel and contributors, ${lic('ccBySa3')}.`],
-  ['School grades, readings, meanings and stroke counts',
-    `${a('https://www.edrdg.org/wiki/index.php/KANJIDIC_Project', 'KANJIDIC2')} © Electronic Dictionary `
-    + `Research and Development Group, ${lic('ccBySa4')} under the ${lic('edrdg')}.`],
-  ['Fonts',
-    `${a('https://fonts.google.com/specimen/Klee+One', 'Klee One')} by Fontworks and `
-    + `${a('https://fonts.google.com/specimen/Zen+Kaku+Gothic+New', 'Zen Kaku Gothic New')} `
-    + `by Yoshimichi Ohira, ${lic('ofl')}.`],
+  `Stroke order: ${a('https://kanjivg.tagaini.net/', 'KanjiVG')} © Ulrich Apel, ${lic('ccBySa3')}`,
+  `Readings: ${a('https://www.edrdg.org/wiki/index.php/KANJIDIC_Project', 'KANJIDIC2')} © EDRDG, `
+    + `${lic('ccBySa4')}, ${lic('edrdg')}`,
+  `Fonts: ${a('https://fonts.google.com/specimen/Klee+One', 'Klee One')}, `
+    + `${a('https://fonts.google.com/specimen/Zen+Kaku+Gothic+New', 'Zen Kaku Gothic New')}, ${lic('ofl')}`,
 ];
 
 export const SOURCES_NOTE = 'The bundled data is shared under the same licenses.';

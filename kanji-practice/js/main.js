@@ -9,7 +9,7 @@ import { renderSheet } from './sheet/preview.js';
 import { renderPrintout, clearPrintout } from './sheet/printout.js';
 import { USAGE_HTML, INSPIRED_BY_HTML, DETAILS_SUMMARY, SOURCES, SOURCES_NOTE } from './credits.js';
 import { printSheet, downloadSheet } from './export.js';
-import { STATUS } from './text.js';
+import { STATUS, SELECTED } from './text.js';
 
 /* The selection as of the last Generate. */
 let sheetChars = [];
@@ -22,28 +22,25 @@ function drawnChars() {
   return sheetChars.filter(char => !skip.has(char));
 }
 
-const statusEl = $('status');
-
-/** `stale`: the sheet lags the selection. `warn`: something selected is not on it. */
-function setStatus(text, stale = false, warn = stale) {
-  statusEl.textContent = text;
-  statusEl.classList.toggle('warn', warn);
-  $('generate').classList.toggle('stale', stale);
-}
-
+/* No status line: a dot and a tooltip on Generate say the sheet lags the
+   selection, and Print and Save are off while there is nothing to print. */
 function renderStatus() {
   const selected = [...state.selected];
-  if (!sheetChars.length) {
-    return setStatus(selected.length ? STATUS.notGenerated(selected.length) : '');
-  }
-  const upToDate = sheetChars.length === selected.length
-    && sheetChars.every((char, i) => char === selected[i]);
-  if (!upToDate) return setStatus(STATUS.stale, true);
+  const stale = sheetChars.length !== selected.length || sheetChars.some((char, i) => char !== selected[i]);
   const left = undrawn();
-  setStatus(STATUS.shows(sheetChars.length - left.length) + (left.length ? STATUS.undrawn(left) : ''), false, left.length > 0);
+  const generateEl = $('generate');
+  generateEl.classList.toggle('stale', stale);
+  generateEl.title = stale ? STATUS.stale : STATUS.upToDate + (left.length ? `.${STATUS.undrawn(left)}` : '');
+  const nothing = !sheetChars.length && !selected.length;
+  $('print').disabled = $('download').disabled = nothing;
 }
 
-const renderCount = () => { $('count').textContent = state.selected.size || ''; };
+/* Kept in place while empty, so the bar never shifts. */
+function renderCount() {
+  const n = state.selected.size;
+  $('count').textContent = n ? SELECTED(n) : '';
+  $('selection').classList.toggle('empty', !n);
+}
 
 function onSelectionChange() {
   save();
@@ -81,8 +78,7 @@ async function generate() {
 
 const withPrintout = action => async () => {
   if (!sheetChars.length && state.selected.size) await generate();
-  if (!sheetChars.length) return setStatus(STATUS.nothing, true);
-  if (!drawnChars().length) return;   // the status line says why
+  if (!drawnChars().length) return;   // Generate's tooltip says why
   await loadOutlines();
   await action(renderPrintout(drawnChars()));
 };
@@ -121,7 +117,7 @@ addEventListener('afterprint', clearPrintout);
 $('usage').innerHTML = USAGE_HTML;
 $('inspired-by').innerHTML = INSPIRED_BY_HTML;
 $('details-summary').textContent = DETAILS_SUMMARY;
-$('sources').innerHTML = SOURCES.map(([what, who]) => `<dt>${what}</dt><dd>${who}</dd>`).join('');
+$('sources').innerHTML = SOURCES.map(line => `<li>${line}</li>`).join('');
 $('sources-note').textContent = SOURCES_NOTE;
 
 renderView();
