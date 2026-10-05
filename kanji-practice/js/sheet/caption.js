@@ -24,9 +24,10 @@ function kanjiCaption(char, print) {
   const on = onReadings.map(toKatakana).join('、');
   const kun = kunReadings.join('、');
 
-  /* "radical" glosses say nothing, unless they are all there is. */
+  /* "radical" glosses say nothing, unless they are all there is. Past the
+     second meaning they get obscure ("See, Hopes, Chances"). */
   const useful = meanings.filter(m => !/radical/i.test(m));
-  const gloss = (useful.length ? useful : meanings).join(', ');
+  const gloss = (useful.length ? useful : meanings).slice(0, 2).join(', ');
 
   return [
     captionChar(char, print),

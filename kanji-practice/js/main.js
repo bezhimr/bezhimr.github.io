@@ -7,7 +7,7 @@ import { renderTabs, renderPicker, refreshPicker, initPicker } from './picker.js
 import { renderSettings, initSettings } from './settings.js';
 import { renderSheet } from './sheet/preview.js';
 import { renderPrintout, clearPrintout } from './sheet/printout.js';
-import { SOURCES, SOURCES_NOTE, LEGAL_HTML } from './credits.js';
+import { USAGE_HTML, INSPIRED_BY_HTML, DETAILS_SUMMARY, SOURCES, SOURCES_NOTE } from './credits.js';
 import { printSheet, downloadSheet } from './export.js';
 import { STATUS } from './text.js';
 
@@ -118,9 +118,11 @@ addEventListener('beforeprint', () => {
 });
 addEventListener('afterprint', clearPrintout);
 
+$('usage').innerHTML = USAGE_HTML;
+$('inspired-by').innerHTML = INSPIRED_BY_HTML;
+$('details-summary').textContent = DETAILS_SUMMARY;
 $('sources').innerHTML = SOURCES.map(([what, who]) => `<dt>${what}</dt><dd>${who}</dd>`).join('');
 $('sources-note').textContent = SOURCES_NOTE;
-$('legal').innerHTML = LEGAL_HTML;
 
 renderView();
 renderTabs();

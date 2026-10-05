@@ -220,10 +220,8 @@ textarea {
 
 .license { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px }
 .license summary { cursor: pointer; color: var(--shu); font-weight: 700 }
-.license p, .license li { color: var(--ink) }
-.license b { font-weight: 700 }
-.license ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 6px }
-.license .legal { color: var(--muted) }
+.license dl { margin-top: 10px }
+#usage { color: var(--ink) }
 
 /* --- sheet preview --- */
 

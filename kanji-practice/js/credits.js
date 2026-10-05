@@ -12,29 +12,43 @@ export const LICENSES = {
   edrdg:   { name: 'EDRDG licence', url: 'https://www.edrdg.org/edrdg/licence.html' },
   ofl:     { name: 'SIL Open Font License 1.1', url: 'https://openfontlicense.org/' },
 };
+const lic = (key) => a(LICENSES[key].url, LICENSES[key].name);
 
-/** The credits panel: [what it is used for, credit as HTML]. */
+const INSPIRATION_URL = 'https://jensechu.github.io/kanji/index.html';
+
+/** Top of the credits panel: what you may do, in one breath. */
+export const USAGE_HTML =
+  'Print, share or sell the sheets as you like. If they leave your hands, '
+  + 'keep the credit line on: the stroke order and readings data require it.';
+
+export const INSPIRED_BY_HTML = 'Inspired by '
+  + (INSPIRATION_URL ? a(INSPIRATION_URL, "jensechu's kanji worksheet generator")
+                     : "jensechu's kanji worksheet generator") + '.';
+
+/** Label of the collapsible block holding SOURCES and SOURCES_NOTE. */
+export const DETAILS_SUMMARY = 'License details';
+
+/** Inside the details block: [what it is used for, credit as HTML]. */
 export const SOURCES = [
   ['Stroke order and stroke paths',
-    `${a('https://kanjivg.tagaini.net/', 'KanjiVG')} © Ulrich Apel and contributors, ${LICENSES.ccBySa3.name}.`],
+    `${a('https://kanjivg.tagaini.net/', 'KanjiVG')} © Ulrich Apel and contributors, ${lic('ccBySa3')}.`],
   ['School grades, readings, meanings and stroke counts',
-    `${a('https://www.edrdg.org/wiki/index.php/KANJIDIC_Project', 'KANJIDIC2')} © Electronic Dictionary Research and Development Group, ${LICENSES.ccBySa4.name}.`],
+    `${a('https://www.edrdg.org/wiki/index.php/KANJIDIC_Project', 'KANJIDIC2')} © Electronic Dictionary `
+    + `Research and Development Group, ${lic('ccBySa4')} under the ${lic('edrdg')}.`],
   ['Fonts',
     `${a('https://fonts.google.com/specimen/Klee+One', 'Klee One')} by Fontworks and `
-    + `${a('https://fonts.google.com/specimen/Zen+Kaku+Gothic+New', 'Zen Kaku Gothic New')} by Yoshimichi Ohira, ${LICENSES.ofl.name}.`],
+    + `${a('https://fonts.google.com/specimen/Zen+Kaku+Gothic+New', 'Zen Kaku Gothic New')} `
+    + `by Yoshimichi Ohira, ${lic('ofl')}.`],
 ];
 
-export const SOURCES_NOTE = "The bundled data is shared under the same licenses. Inspired by jensechu's kanji worksheet generator.";
+export const SOURCES_NOTE = 'The bundled data is shared under the same licenses.';
 
-/** The "actual terms" line at the end of the license summary. */
-export const LEGAL_HTML = 'This is a plain summary, not legal advice. The actual terms: '
-  + `${a(LICENSES.ccBySa3.url, LICENSES.ccBySa3.name)} (KanjiVG), `
-  + `${a(LICENSES.edrdg.url, LICENSES.edrdg.name)}, i.e. ${a(LICENSES.ccBySa4.url, LICENSES.ccBySa4.name)} (KANJIDIC2), `
-  + `${a(LICENSES.ofl.url, LICENSES.ofl.name)} (fonts).`;
+/** A license with its address spelled out, for paper where links don't work. */
+const printedLic = (key) => `${LICENSES[key].name} (${LICENSES[key].url.replace(/^https:\/\/|\/$/g, '')})`;
 
 /** Printed at the foot of every sheet page. */
-export const CREDIT_LINE = `Stroke order: KanjiVG © Ulrich Apel, ${LICENSES.ccBySa3.name}. `
-  + `Readings and meanings: KANJIDIC2 © EDRDG, ${LICENSES.ccBySa4.name}. `
+export const CREDIT_LINE = `Stroke order: KanjiVG © Ulrich Apel, ${printedLic('ccBySa3')}. `
+  + `Readings and meanings: KANJIDIC2 © EDRDG, ${printedLic('ccBySa4')}. `
   + 'Font: Klee One by Fontworks.';
 
 /** Short source note under each grade tab. */
