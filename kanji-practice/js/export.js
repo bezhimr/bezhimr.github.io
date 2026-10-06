@@ -1,6 +1,7 @@
 /* Printing, and saving a standalone copy with its fonts embedded. */
 
 import { SAVED_TITLE, SAVED_FILENAME, PRINT_BUTTON } from './text.js';
+import { appUrl } from './util.js';
 
 /* The printout draws kanji from outlines, but captions and stroke numbers are
    still text. Printing before these webfonts have arrived would print them in
@@ -21,7 +22,7 @@ export async function printSheet() {
   window.print();
 }
 
-const fetchText = path => fetch(path).then(r => r.text());
+const fetchText = path => fetch(appUrl(path)).then(r => r.text());
 
 const asDataUri = blob => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -34,7 +35,7 @@ const asDataUri = blob => new Promise((resolve, reject) => {
 async function embeddedFonts() {
   const css = await fetchText('css/fonts.css');
   const files = [...new Set([...css.matchAll(/\.\.\/(fonts\/[^"]+\.woff2)/g)].map(m => m[1]))];
-  const inlined = await Promise.all(files.map(async file => [file, await fetch(file).then(r => r.blob()).then(asDataUri)]));
+  const inlined = await Promise.all(files.map(async file => [file, await fetch(appUrl(file)).then(r => r.blob()).then(asDataUri)]));
   return inlined.reduce((out, [file, dataUri]) => out.replaceAll(`../${file}`, dataUri), css);
 }
 
