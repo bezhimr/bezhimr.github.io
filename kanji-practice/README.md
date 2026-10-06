@@ -1,6 +1,6 @@
 ## Credits
 
-All credits and license links shown in the app live in `js/credits.js`; the rest of the app's text is in `js/text.js`.
+(All credits and license links shown in the app live in `js/credits.js`)
 
 - Stroke paths and stroke order — [KanjiVG](https://kanjivg.tagaini.net/) © Ulrich Apel, CC BY-SA 3.0
 - Jōyō and jinmeiyō lists, readings, meanings, stroke counts — [KANJIDIC2](https://www.edrdg.org/wiki/index.php/KANJIDIC_Project) © EDRDG, CC BY-SA 4.0
