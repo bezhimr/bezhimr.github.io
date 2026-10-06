@@ -1,18 +1,3 @@
-# Kanji practice sheets
-
-Printable kanji and kana practice sheets, grouped by Kanken level, the first six of which are the Japanese school grades. A static site: serve this folder and open `index.html`.
-
-## Rebuilding the data
-
-`data/` and the webfont subsets in `fonts/` are generated, and committed so the site needs no build step. The exceptions are `data/kana-table.json` and `data/kanken.json`, the kana tables and Kanken levels, written by hand, and the full fonts in `tools/fonts/`, which the subsets are cut from. To regenerate from newer sources:
-
-```sh
-pip install fonttools brotli
-python3 tools/build.py kanjidic2.xml.gz kanjivg/kanji
-```
-
-See the top of `tools/build.py` for where to get the sources.
-
 ## Credits
 
 All credits and license links shown in the app live in `js/credits.js`; the rest of the app's text is in `js/text.js`.
