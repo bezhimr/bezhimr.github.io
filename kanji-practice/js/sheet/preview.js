@@ -25,7 +25,7 @@ function previewBox(kind, char, settings) {
   switch (kind) {
     case 'model': return glyphBox('g', 1, modelNumbers(char, settings));
     case 'trace': return glyphBox('g t', settings.opacity / 100);
-    case 'order': return `<div class="box">${svg(strokeOrder(char))}</div>`;
+    case 'order': return `<div class="box">${svg(strokeOrder(char, settings))}</div>`;
     case 'plain': return `<div class="box${crossed}"></div>`;
     case 'crossed': return '<div class="box x"></div>';
     default: return '<div class="box"></div>';

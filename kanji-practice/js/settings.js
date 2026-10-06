@@ -9,7 +9,7 @@ function readControl(el) {
   if (el.type === 'checkbox') return el.checked;
   if (el.type === 'range') return +el.value;
   if (el.type === 'number') {
-    const n = parseInt(el.value, 10) || 0;
+    const n = (el.step ? parseFloat(el.value) : parseInt(el.value, 10)) || 0;
     return Math.min(Math.max(n, +el.min), el.max ? +el.max : Infinity);
   }
   if (el.tagName === 'SELECT' && /^\d+$/.test(el.value)) return +el.value;
@@ -32,6 +32,11 @@ export function renderSettings() {
   const isLiner = state.settings.pen === 'liner';
   $('s-linewidth').disabled = !isLiner;
   $('row-linewidth').classList.toggle('off', !isLiner);
+
+  /* Number size matters only while stroke numbers are shown. */
+  const hasNumbers = state.settings.order !== 'off';
+  $('s-numbersize').disabled = !hasNumbers;
+  $('row-numbersize').classList.toggle('off', !hasNumbers);
 
   /* Stroke order on the model needs the model box. */
   const modelForced = state.settings.order === 'model';

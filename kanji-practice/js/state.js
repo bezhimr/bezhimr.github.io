@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS = {
   lineWidth: 0.5,    // the liner's line, in mm on paper whatever the box size
   opacity: 20,       // strength of the gray glyphs, in percent
   order: 'box',      // stroke order: 'box' (its own first box), 'model' (numbered on the model) or 'off'
+  numberSize: 1.4,   // stroke numbers' height, in mm on paper whatever the box size
   model: true,       // the character in solid ink, to copy from
   gray: true,
   guidesAll: true,   // cross guides behind the model and tracing glyphs; crossed boxes always have them

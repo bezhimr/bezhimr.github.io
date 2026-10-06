@@ -18,7 +18,7 @@ function printBox(kind, char, settings, guides) {
   switch (kind) {
     case 'model': return box(under + glyph(char, settings, 1) + modelNumbers(char, settings));
     case 'trace': return box(under + glyph(char, settings, gray));
-    case 'order': return box(strokeOrder(char));
+    case 'order': return box(strokeOrder(char, settings));
     case 'plain': return box(under);
     case 'crossed': return box(guides);
     default: return box('');

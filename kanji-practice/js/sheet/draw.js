@@ -5,7 +5,7 @@
 import { STROKES, OUTLINES } from '../data.js';
 import {
   VIEWBOX, CENTER, GLYPH_SIZE, BASELINE, OUTLINE_EM,
-  SKELETON_WIDTH, INK, SHU, NUMBER_OUTLINE, GUIDE_COLOR,
+  SKELETON_WIDTH, NUMBER_OUTLINE_RATIO, INK, SHU, NUMBER_OUTLINE, GUIDE_COLOR,
 } from './constants.js';
 
 export const svg = (contents, cls = '') =>
@@ -57,19 +57,20 @@ function skeleton(char, width = SKELETON_WIDTH) {
     + `</g>`;
 }
 
-export function strokeNumbers(char) {
+export function strokeNumbers(char, settings) {
   const data = STROKES[char];
   if (!data) return '';
+  const size = settings.numberSize * VIEWBOX / settings.box;   // mm on paper to box units
   const labels = data.n.map(([x, y], i) => `<text x="${x}" y="${y}">${i + 1}</text>`).join('');
-  return `<g font-family="'Zen Kaku Gothic New',sans-serif" font-weight="700" font-size="8.5"`
-    + ` fill="${SHU}" stroke="${NUMBER_OUTLINE}" stroke-width="2.2" paint-order="stroke"`
+  return `<g font-family="'Zen Kaku Gothic New',sans-serif" font-weight="700" font-size="${size.toFixed(2)}"`
+    + ` fill="${SHU}" stroke="${NUMBER_OUTLINE}" stroke-width="${(size * NUMBER_OUTLINE_RATIO).toFixed(2)}" paint-order="stroke"`
     + ` stroke-linejoin="round">${labels}</g>`;
 }
 
-export const strokeOrder = char => skeleton(char) + strokeNumbers(char);
+export const strokeOrder = (char, settings) => skeleton(char) + strokeNumbers(char, settings);
 
 /** Stroke numbers for the model box, when the stroke order goes there. */
-export const modelNumbers = (char, settings) => (settings.order === 'model' ? strokeNumbers(char) : '');
+export const modelNumbers = (char, settings) => (settings.order === 'model' ? strokeNumbers(char, settings) : '');
 
 /** The character to copy or trace, in KanjiVG stroke lines of the liner's
     width. Opacity goes on the group so crossing strokes do not darken. */
