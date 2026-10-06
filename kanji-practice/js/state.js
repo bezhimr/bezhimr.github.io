@@ -4,7 +4,7 @@ import { isPractisable, isKanji } from './data.js';
 
 const DEFAULT_SETTINGS = {
   trace: 3,          // boxes with a faint glyph to trace over
-  guide: 3,          // empty boxes with dotted cross guides
+  guide: 3,          // empty boxes with cross guides
   blank: 2,          // entirely empty boxes
   box: 18,           // box edge in mm
   pen: 'liner',      // model and tracing glyphs: 'brush' (Klee One SemiBold) or 'liner' (thin KanjiVG stroke lines)

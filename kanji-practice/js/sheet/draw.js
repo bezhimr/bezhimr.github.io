@@ -40,11 +40,10 @@ export function defsHtml() {
 
 /* --- strokes --- */
 
-/** Dotted vertical and horizontal centre lines. */
+/** Solid vertical and horizontal centre lines. */
 export function crossGuides(unitsPerMm) {
   const width = (0.2 * unitsPerMm).toFixed(2);
-  const dash = `${(1.1 * unitsPerMm).toFixed(2)} ${(0.9 * unitsPerMm).toFixed(2)}`;
-  return `<g stroke="${GUIDE_COLOR}" stroke-width="${width}" stroke-dasharray="${dash}" fill="none">`
+  return `<g stroke="${GUIDE_COLOR}" stroke-width="${width}" fill="none">`
     + `<line x1="${CENTER}" y1="0" x2="${CENTER}" y2="${VIEWBOX}"/>`
     + `<line x1="0" y1="${CENTER}" x2="${VIEWBOX}" y2="${CENTER}"/></g>`;
 }

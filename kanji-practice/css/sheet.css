@@ -52,7 +52,7 @@
   position: relative;
   width: var(--box);
   height: var(--box);
-  border: .3mm solid #6E8793;
+  border: .3mm solid #000;
   margin: -.3mm 0 0 -.3mm;
 }
 .box svg { display: block; width: 100%; height: 100% }

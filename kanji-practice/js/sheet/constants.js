@@ -12,7 +12,7 @@ export const SKELETON_WIDTH = 3.2;  // KanjiVG strokes in the stroke-order box
 export const INK = '#080806';
 export const SHU = '#C4342A';       // 朱 red, for stroke numbers
 export const NUMBER_OUTLINE = '#fff';
-export const GUIDE_COLOR = '#2C2C2C';
+export const GUIDE_COLOR = '#999999';
 
 /* Page geometry in mm. The page size is fixed in sheet.css; the rest reaches
    the CSS through sheetVars() in layout.js. */
