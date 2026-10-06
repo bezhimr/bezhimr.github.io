@@ -17,6 +17,7 @@ const DEFAULT_SETTINGS = {
   info: true,
   strokeCount: true, // "12 strokes" in the caption
   credit: true,
+  tableFont: 'default', // font of the characters in the picker tables: 'default' (the system's) or 'klee' (handwriting)
   spread: true,      // spread blocks down the page; off packs them at the top
 };
 
@@ -26,7 +27,7 @@ const DEFAULT_SELECTION = '今日は';
 
 export const state = {
   view: 'chars',     // or 'settings'
-  tab: 'grade1',
+  tab: 'kanken10',
   /* Insertion order is the order on the sheet. */
   selected: new Set(),
   /* Pasted kanji without stroke data; they stay listed once added. */
@@ -77,7 +78,7 @@ export function load() {
 
 export const isSelected = char => state.selected.has(char);
 
-/** Every graded kanji and basic kana, and any other kanji. */
+/** Every listed kanji and basic kana, and any other kanji. */
 export const isSelectable = char => isPractisable(char) || isKanji(char);
 
 /** Remember kanji without stroke data, for the Paste tab. */

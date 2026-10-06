@@ -12,12 +12,14 @@ data/outlines/, and subsets the fonts in tools/fonts/ into the webfonts in
 fonts/ (see SUBSETS), keeping the UI characters plus every kanji in the
 groups. Both need fontTools and brotli (pip install fonttools brotli);
 --no-fonts skips them. The rest uses only the standard library. The output
-formats are described in js/data.js. The kana come from data/kana-table.json,
-which is written by hand.
+formats are described in js/data.js. The kana come from data/kana-table.json
+and the Kanken levels from data/kanken.json, both written by hand.
 
-Groups: grade1 … grade6 are the elementary school years; secondary is the rest
-of the jōyō kanji (all "grade 8" in KANJIDIC2, with no official year); names
-are the jinmeiyō kanji, grade 9 then grade 10 (older forms of jōyō kanji).
+Groups: the jōyō kanji by Kanken level, 10級 to 2級, as listed in
+data/kanken.json: the Kanken association's 級別漢字表 (2020),
+https://www.kanken.or.jp/kanken/outline/degree/, with 𠮟 塡 剝 頰 in their
+jōyō forms. 10級 to 5級 are the six elementary school grades. names are the
+jinmeiyō kanji, KANJIDIC2 grade 9 then grade 10 (older forms of jōyō kanji).
 Kanji without KanjiVG strokes are left out.
 """
 
@@ -40,10 +42,9 @@ SUBSETS = {   # webfont in fonts/: its source in tools/fonts/
 }
 UI_CHARS = [*range(0x20, 0x7F), *range(0xA0, 0x100), *range(0x2000, 0x2070),
             *range(0x3000, 0x3100), *range(0xFF00, 0xFFF0)]   # Latin, punctuation, kana, full width
-GROUPS = {
-    'grade1': [1], 'grade2': [2], 'grade3': [3], 'grade4': [4], 'grade5': [5], 'grade6': [6],
-    'secondary': [8], 'names': [9, 10],
-}
+KANKEN = json.loads((ROOT / 'data/kanken.json').read_text(encoding='utf-8'))   # group -> its kanji
+JOYO = [1, 2, 3, 4, 5, 6, 8]   # KANJIDIC2 grades
+GROUPS = {**{level: JOYO for level in KANKEN}, 'names': [9, 10]}   # group -> KANJIDIC2 grades
 
 
 def kana():
@@ -179,9 +180,18 @@ def main():
     strokes = lambda chars: {c: strokes_of(svg(c).read_text(encoding='utf-8')) for c in chars}
     by_use = lambda c: (dic[c]['freq'], dic[c]['strokes'], ord(c))
 
+    joyo = {c for c, k in dic.items() if k['grade'] in JOYO}
+    leveled = [c for chars in KANKEN.values() for c in chars]
+    if set(leveled) != joyo or len(leveled) != len(joyo):
+        raise SystemExit('data/kanken.json must list every jōyō kanji exactly once: '
+                         f'unlisted {"".join(sorted(joyo - set(leveled)))}, '
+                         f'not jōyō {"".join(sorted(set(leveled) - joyo))}')
+
     groups = {}
     for name, grades in GROUPS.items():
         graded = [c for grade in grades for c in sorted((c for c, k in dic.items() if k['grade'] == grade), key=by_use)]
+        if name in KANKEN:
+            graded = [c for c in graded if c in KANKEN[name]]
         groups[name] = [c for c in graded if svg(c).exists()]
         if missing := [c for c in graded if not svg(c).exists()]:
             print(f'{name}: no KanjiVG strokes for {"".join(missing)}')

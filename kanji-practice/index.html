@@ -19,14 +19,21 @@
       <div class="viewbar">
         <div class="views" id="views" role="tablist">
           <button class="view" role="tab" data-view="chars">Characters</button>
-          <button class="view" role="tab" data-view="settings">Settings</button>
+          <button class="view" role="tab" data-view="settings">Sheet settings</button>
         </div>
         <p class="selection" id="selection"><span id="count" aria-live="polite"></span> · <button class="link" id="clear">Clear all</button></p>
       </div>
 
       <div id="view-chars" role="tabpanel">
         <div class="tabs" id="tabs"></div>
-        <div id="picker"></div>
+        <div id="picker" lang="ja"></div>
+        <div class="row fontrow">
+          <label for="s-tablefont">Character selection font</label>
+          <select id="s-tablefont" data-k="tableFont">
+            <option value="default">System default</option>
+            <option value="klee">Klee One (handwritten)</option>
+          </select>
+        </div>
       </div>
 
       <div id="view-settings" role="tabpanel" hidden>
@@ -96,8 +103,11 @@
 
       <details class="license">
         <summary id="details-summary"></summary>
-        <ul id="sources"></ul>
-        <p id="sources-note"></p>
+        <div class="pop">
+          <button type="button" class="popclose" id="license-close" aria-label="Close">&times;</button>
+          <ul id="sources"></ul>
+          <p id="sources-note"></p>
+        </div>
       </details>
     </section>
 
@@ -107,9 +117,6 @@
     <div class="preview"><div class="pages" id="sheet"></div></div>
     <div class="pages" id="printout" aria-hidden="true"></div>
     <nav class="rail" aria-label="Sheet">
-      <button class="rbtn primary" id="generate" title="Lay out the selected characters">
-        <span>Generate</span>
-      </button>
       <button class="rbtn" id="print" title="Print the sheet">
         <span>Print</span>
       </button>

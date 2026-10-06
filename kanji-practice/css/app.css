@@ -14,8 +14,8 @@
   --line: #E2E2E2;
   --control: #C4C4C4;   /* borders of buttons and inputs */
   --hover: #F3F3F3;
+  --current: #E3E3E3;   /* the open tab */
   --shu: #D0402F;       /* 朱 — selection only */
-  --r: 6px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,6 +26,7 @@
     --line: #333333;
     --control: #555555;
     --hover: #2A2A2A;
+    --current: #333333;
     --shu: #E8604F;
   }
 }
@@ -123,7 +124,7 @@ main {
   cursor: pointer;
 }
 .tab:hover { color: var(--ink); background: var(--hover) }
-.tab[aria-selected="true"] { color: var(--ink); background: var(--hover) }
+.tab[aria-selected="true"] { color: var(--ink); background: var(--current) }
 /* A red dot on a tab holding selected characters; the count is in its title.
    A dot, not a number, so the tabs never change width. */
 .tab.has::after {
@@ -168,11 +169,13 @@ main {
   /* Centering puts the middle of Klee One's line box (.436em above the
      baseline) in the middle of the cell, but its em box is centered .38em
      above it: lift the glyph by the difference. */
-  padding: 0 0 .112em;
-  font-family: "Klee One", serif;
+  padding: 0;
+  font-family: sans-serif;   /* the system's Japanese font; #picker is lang="ja" */
   font-size: 22px;
   line-height: 1;
 }
+/* Klee One draws its glyphs smaller in the em box than the system font does. */
+body[data-table-font="klee"] .ch { font-family: "Klee One", serif; font-size: 26px; padding-bottom: .112em }
 .ch:hover { background: var(--hover) }
 .ch.on { color: var(--shu); font-weight: 600 }
 
@@ -207,8 +210,10 @@ textarea {
   padding: 8px 10px;
   font-family: "Klee One", serif;
   font-size: 20px;
+  line-height: 1.5;
   resize: vertical;
 }
+textarea:focus-visible { outline: none; border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink) }
 
 .sub { display: block; font-size: 13px; font-weight: 700; margin: 24px 0 8px }
 .body > .sub:first-child { margin-top: 0 }
@@ -217,6 +222,8 @@ textarea {
 .note:empty { display: none }
 .note.warn { color: var(--ink); font-weight: 700 }
 .about { font-size: 13px; color: var(--sub); margin: 20px 0 0 }
+.about p { margin: 0 }
+.about p + p { margin-top: 8px }
 .about b { color: var(--ink) }
 
 /* --- settings --- */
@@ -228,6 +235,7 @@ textarea {
   gap: 4px 12px;
   padding: 6px 0;
 }
+.fontrow { margin-top: 16px }
 .row.off { color: var(--sub) }
 .row.off input, .row.off select { opacity: .5 }
 .row[hidden] { display: none }
@@ -238,9 +246,9 @@ textarea {
 /* Ordinary, quiet controls: a thin track with a small round handle, and a
    checkbox that fills with ink and shows a white tick. */
 .range input { width: 130px; height: 16px; margin: 0; background: none; appearance: none; cursor: pointer }
-.range input::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; background: var(--line) }
-.range input::-moz-range-track { height: 3px; border-radius: 2px; background: var(--line) }
-.range input::-moz-range-progress { height: 3px; border-radius: 2px; background: var(--sub) }
+.range input::-webkit-slider-runnable-track { height: 3px; border-radius: 0; background: var(--line) }
+.range input::-moz-range-track { height: 3px; border-radius: 0; background: var(--line) }
+.range input::-moz-range-progress { height: 3px; border-radius: 0; background: var(--sub) }
 .range input::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; margin-top: -5.5px; border: 1px solid var(--control); border-radius: 50%; background: var(--paper) }
 .range input::-moz-range-thumb { width: 12px; height: 12px; border: 1px solid var(--control); border-radius: 50%; background: var(--paper) }
 .range input:disabled { cursor: default }
@@ -254,7 +262,7 @@ textarea {
   height: 15px;
   margin: 0;
   border: 1px solid var(--control);
-  border-radius: 3px;
+  /*border-radius: 3px;*/
   background: var(--paper) no-repeat center / 11px;
   cursor: pointer;
 }
@@ -273,9 +281,21 @@ textarea {
 .credits a { white-space: nowrap }
 .credits p { color: var(--sub); margin: 10px 0 0 }
 
-.license { margin-top: 12px }
+.license { margin-top: 12px; position: relative }
+/* Opens upward as a card over what's above, so it is never below the fold. */
+.license .pop {
+  position: absolute; left: 0; right: 0; bottom: calc(100% + 6px); z-index: 5;
+  padding: 4px 36px 12px 12px; background: var(--paper);
+  border: 1px solid var(--control); border-radius: var(--r);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .15);
+}
+.license .popclose {
+  position: absolute; top: 4px; right: 6px; width: 24px; height: 24px; padding: 0;
+  border: none; background: none; color: var(--sub); font-size: 20px; line-height: 1; cursor: pointer;
+}
+.license .popclose:hover { color: var(--ink) }
 .license summary { cursor: pointer }
-.license ul { list-style: none; margin: 10px 0 0; padding: 0; color: var(--sub) }
+.license ul { list-style: none; margin: 6px 0 0; padding: 0; color: var(--sub) }
 #usage { color: var(--ink) }
 
 /* --- sheet preview --- */
@@ -295,7 +315,7 @@ textarea {
 /* Off screen, not display: none: it must be laid out to print. */
 #printout { position: fixed; top: 0; left: -10000px }
 
-/* Generate, the main action, in bold; Print and Save below it. */
+/* Print and Save. */
 .rail { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 8px }
 .rbtn {
   position: relative;
@@ -309,18 +329,6 @@ textarea {
 }
 .rbtn:hover { background: var(--hover) }
 .rbtn:disabled { color: var(--control); border-color: var(--line); background: var(--paper); cursor: default }
-.rbtn.primary { font-weight: 700; margin-bottom: 8px }
-/* A red dot on Generate while the sheet lags behind the selection. */
-.rbtn.stale::after {
-  content: "";
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--shu);
-}
 
 /* One column: the preview is far below the controls, so pin the rail to the
    bottom of the screen as a row instead. */
@@ -328,7 +336,6 @@ textarea {
   .previewcol { display: block }
   .rail { position: fixed; top: auto; bottom: 16px; right: 16px; z-index: 5; flex-direction: row }
   .rbtn { width: 76px; padding: 10px 0; box-shadow: 0 2px 8px rgba(0, 0, 0, .12) }
-  .rbtn.primary { margin: 0 }
 }
 
 /* Placeholder shown before a sheet is generated. */

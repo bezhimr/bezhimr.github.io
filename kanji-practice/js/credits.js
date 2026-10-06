@@ -14,6 +14,9 @@ export const LICENSES = {
 };
 const lic = (key) => a(LICENSES[key].url, LICENSES[key].name);
 
+const KANJIVG_URL = 'https://kanjivg.tagaini.net/';
+const KANJIDIC_URL = 'https://www.edrdg.org/wiki/index.php/KANJIDIC_Project';
+
 const INSPIRATION_URL = 'https://jensechu.github.io/kanji/index.html';
 
 /** Top of the credits panel: what you may do, in one breath. */
@@ -30,8 +33,8 @@ export const DETAILS_SUMMARY = 'License details';
 
 /** Inside the details block: one short line of HTML per source and its license. */
 export const SOURCES = [
-  `Stroke order: ${a('https://kanjivg.tagaini.net/', 'KanjiVG')} © Ulrich Apel, ${lic('ccBySa3')}`,
-  `Readings: ${a('https://www.edrdg.org/wiki/index.php/KANJIDIC_Project', 'KANJIDIC2')} © EDRDG, `
+  `Stroke order: ${a(KANJIVG_URL, 'KanjiVG')} © Ulrich Apel, ${lic('ccBySa3')}`,
+  `Readings: ${a(KANJIDIC_URL, 'KANJIDIC2')} © EDRDG, `
     + `${lic('ccBySa4')}, ${lic('edrdg')}`,
   `Fonts: ${a('https://fonts.google.com/specimen/Klee+One', 'Klee One')}, `
     + `${a('https://fonts.google.com/specimen/Zen+Kaku+Gothic+New', 'Zen Kaku Gothic New')}, ${lic('ofl')}`,
@@ -47,5 +50,5 @@ export const CREDIT_LINE = `Stroke order: KanjiVG © Ulrich Apel, ${printedLic('
   + `Readings and meanings: KANJIDIC2 © EDRDG, ${printedLic('ccBySa4')}. `
   + 'Font: Klee One by Fontworks.';
 
-/** Short source note under each grade tab. */
-export const PICKER_SOURCE_NOTE = 'Stroke order from KanjiVG, readings from KANJIDIC2.';
+/** Short source note under each kanji tab (HTML). */
+export const PICKER_SOURCE_NOTE = `Stroke order from ${a(KANJIVG_URL, 'KanjiVG')}, readings from ${a(KANJIDIC_URL, 'KANJIDIC2')}.`;

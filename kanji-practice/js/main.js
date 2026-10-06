@@ -11,7 +11,7 @@ import { USAGE_HTML, INSPIRED_BY_HTML, DETAILS_SUMMARY, SOURCES, SOURCES_NOTE } 
 import { printSheet, downloadSheet } from './export.js';
 import { STATUS, SELECTED } from './text.js';
 
-/* The selection as of the last Generate. */
+/* The selection as drawn on the sheet. */
 let sheetChars = [];
 
 /* The liner needs stroke data; characters without it are left off the sheet. */
@@ -22,17 +22,14 @@ function drawnChars() {
   return sheetChars.filter(char => !skip.has(char));
 }
 
-/* No status line: a dot and a tooltip on Generate say the sheet lags the
-   selection, and Print and Save are off while there is nothing to print. */
+/* No status line: Print and Save are off while there is nothing to print, and
+   their tooltips say which characters the sheet leaves out. */
 function renderStatus() {
-  const selected = [...state.selected];
-  const stale = sheetChars.length !== selected.length || sheetChars.some((char, i) => char !== selected[i]);
   const left = undrawn();
-  const generateEl = $('generate');
-  generateEl.classList.toggle('stale', stale);
-  generateEl.title = stale ? STATUS.stale : STATUS.upToDate + (left.length ? `.${STATUS.undrawn(left)}` : '');
-  const nothing = !sheetChars.length && !selected.length;
-  $('print').disabled = $('download').disabled = nothing;
+  const note = left.length ? STATUS.undrawn(left) : '';
+  $('print').title = STATUS.print + note;
+  $('download').title = STATUS.save + note;
+  $('print').disabled = $('download').disabled = !sheetChars.length;
 }
 
 /* Kept in place while empty, so the bar never shifts. */
@@ -47,7 +44,7 @@ function onSelectionChange() {
   refreshPicker();
   renderTabs();
   renderCount();
-  renderStatus();
+  generate();
 }
 
 function renderView() {
@@ -58,32 +55,32 @@ function renderView() {
 
 const loadOutlines = () => ensureOutlines(sheetChars);
 
-/* Outlines are only for printing, so they load in the background. */
-async function drawSheet() {
-  await ensureLoaded(sheetChars);
-  renderSheet(drawnChars());
-  loadOutlines().catch(() => {});
-}
-
 function onSettingsChange() {
   renderSettings();
-  drawSheet().then(renderStatus);
+  generate();
 }
 
+/* The sheet follows the selection. A slow data fetch for an older selection
+   must not draw over a newer one. */
+let drawing = 0;
 async function generate() {
   sheetChars = [...state.selected];
-  await drawSheet();
+  const mine = ++drawing;
   renderStatus();
+  await ensureLoaded(sheetChars);
+  if (mine !== drawing) return;
+  renderSheet(drawnChars());
+  renderStatus();
+  loadOutlines().catch(() => {});   // only printing needs them, so they load in the background
 }
 
 const withPrintout = action => async () => {
-  if (!sheetChars.length && state.selected.size) await generate();
-  if (!drawnChars().length) return;   // Generate's tooltip says why
+  if (!drawnChars().length) return;   // the tooltip says why
   await loadOutlines();
   await action(renderPrintout(drawnChars()));
 };
 
-const isFirstVisit = load();
+load();
 initPicker(onSelectionChange);
 initSettings(onSettingsChange);
 
@@ -99,8 +96,6 @@ $('clear').addEventListener('click', () => {
   state.selected.clear();
   onSelectionChange();
 });
-
-$('generate').addEventListener('click', generate);
 
 $('print').addEventListener('click', withPrintout(printSheet));
 $('download').addEventListener('click', withPrintout(async printout => {
@@ -119,6 +114,7 @@ $('inspired-by').innerHTML = INSPIRED_BY_HTML;
 $('details-summary').textContent = DETAILS_SUMMARY;
 $('sources').innerHTML = SOURCES.map(line => `<li>${line}</li>`).join('');
 $('sources-note').textContent = SOURCES_NOTE;
+$('license-close').addEventListener('click', () => { document.querySelector('.license').open = false; });
 
 renderView();
 renderTabs();
@@ -126,5 +122,4 @@ renderPicker();
 renderCount();
 renderSettings();
 
-if (isFirstVisit) await generate();
-else { renderSheet(sheetChars); renderStatus(); }
+await generate();

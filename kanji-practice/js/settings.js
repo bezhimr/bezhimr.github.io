@@ -25,6 +25,7 @@ export function renderSettings() {
     else el.value = value;
   }
 
+  document.body.dataset.tableFont = state.settings.tableFont;
   $('opacity-value').textContent = percent(state.settings.opacity);
   $('linewidth-value').textContent = mm(state.settings.lineWidth);
   /* Line width is for the liner only. */

@@ -5,6 +5,7 @@
  *   data/<group>.json           { meta, strokes }
  *   data/kana.json              { strokes }
  *   data/kana-table.json        the kana tables (written by hand, see kana.js)
+ *   data/kanken.json            Kanken level -> its kanji (written by hand, see tools/build.py)
  *   data/outlines/<group>.json  char -> Klee One SemiBold outline
  *
  *   meta     kanji -> [strokeCount, meanings[], onReadings[], kunReadings[]]

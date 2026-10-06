@@ -9,30 +9,50 @@ import { PICKER_SOURCE_NOTE } from './credits.js';
 
 /* --- the Characters panel --- */
 
-/** The picker's tabs, in order: [key, label]. Grade keys match data/grades.json. */
+/** The picker's tabs, in order: [key, label]. Kanji tab keys match data/grades.json. */
 export const TABS = [
-  ['grade1', 'Grade 1'], ['grade2', '2'], ['grade3', '3'], ['grade4', '4'], ['grade5', '5'], ['grade6', '6'],
-  ['secondary', 'Secondary'], ['names', 'Names'],
+  ['kanken10', 'Kanken 10級'], ['kanken9', '9級'], ['kanken8', '8級'], ['kanken7', '7級'], ['kanken6', '6級'],
+  ['kanken5', '5級'], ['kanken4', '4級'], ['kanken3', '3級'], ['kanken-pre2', '準2級'], ['kanken2', '2級'],
+  ['names', 'Names'],
   ['hira', 'ひらがな'], ['kata', 'カタカナ'], ['paste', 'Paste'],
 ];
 
-const GRADE_ABOUT = {
-  secondary: n => `<b>${n} kanji</b> taught in secondary school: the rest of the 2,136 jōyō kanji, Japan's
-    official list for everyday use, that come after the six elementary grades.`,
-  names: n => `<b>${n} jinmeiyō kanji</b>, allowed in personal names on top of the jōyō ones. The last
-    ones are older forms of jōyō kanji, still seen in names (澤, 廣).`,
+const KANKEN_URL = 'https://en.wikipedia.org/wiki/Kanji_Kentei';
+const JOYO_URL = 'https://en.wikipedia.org/wiki/Jōyō_kanji';
+const JINMEIYO_URL = 'https://en.wikipedia.org/wiki/Jinmeiyō_kanji';
+
+const kankenAbout = (level, stage) => n => `<a href="${KANKEN_URL}" target="_blank"
+  rel="noopener">Kanken</a> level ${level} adds <b>${n} kanji</b>, roughly what's
+  learned by ${stage}. Levels 10級 to 2級 add up to the 2,136
+  <a href="${JOYO_URL}" target="_blank" rel="noopener">jōyō kanji</a>.`;
+
+const endOfGrade = n => `the end of elementary school grade ${n}`;
+
+const GROUP_ABOUT = {
+  kanken10: kankenAbout('10 (10級)', endOfGrade(1)),
+  kanken9: kankenAbout('9 (9級)', endOfGrade(2)),
+  kanken8: kankenAbout('8 (8級)', endOfGrade(3)),
+  kanken7: kankenAbout('7 (7級)', endOfGrade(4)),
+  kanken6: kankenAbout('6 (6級)', endOfGrade(5)),
+  kanken5: kankenAbout('5 (5級)', endOfGrade(6)),
+  kanken4: kankenAbout('4 (4級)', 'mid junior high'),
+  kanken3: kankenAbout('3 (3級)', 'the end of junior high'),
+  'kanken-pre2': kankenAbout('pre-2 (準2級)', 'mid high school'),
+  kanken2: kankenAbout('2 (2級)', 'the end of high school'),
+  names: n => `<b>${n}</b> <a href="${JINMEIYO_URL}" target="_blank"
+    rel="noopener">jinmeiyō kanji</a>, the extra characters allowed in Japanese names.`,
 };
 
-const SHIFT_HINT = 'Shift-click a second kanji to select or clear everything between it and the last one clicked.';
+const SHIFT_HINT = 'Shift-click to select or clear a range.';
 
-/** The note under a grade tab. */
-export const gradeAbout = (grade, n) => [
-  GRADE_ABOUT[grade] ? GRADE_ABOUT[grade](n) : `<b>${n} kanji</b> taught in year ${grade.slice(-1)} of elementary school in Japan.`,
-  'Most common first.', PICKER_SOURCE_NOTE, SHIFT_HINT,
-].join(' ');
+/** The note under a kanji tab: a list of paragraphs. */
+export const groupAbout = (group, n) => [
+  GROUP_ABOUT[group](n),
+  ['Most common first.', PICKER_SOURCE_NOTE, SHIFT_HINT].join(' '),
+];
 
 export const ALL = n => `All ${n}`;
-export const ALL_OF_GRADE = 'Select or clear the whole grade';
+export const ALL_OF_GROUP = 'Select or clear the whole tab';
 
 export const KANA_ALL = 'All';
 export const KANA_ALL_OF_TABLE = 'Whole table';
@@ -84,16 +104,16 @@ const listOf = chars => chars.slice(0, LIST_MAX).join(' ')
 
 export const SELECTED = n => `${n} selected`;
 
-/* Tooltips on the Generate button. */
+/* Tooltips on Print and Save. */
 export const STATUS = {
-  upToDate: 'Lay out the selected characters',
-  stale: 'Selection changed. Press Generate to update the sheet.',
-  undrawn: chars => ` Not drawn, the liner has no stroke data for ${listOf(chars)}.`,
+  print: 'Print the sheet',
+  save: 'Save the sheet as a file that prints anywhere, no internet or fonts needed',
+  undrawn: chars => `. Not drawn, the liner has no stroke data for ${listOf(chars)}.`,
 };
 
 /* --- the sheet --- */
 
-export const PLACEHOLDER = { mark: '練', text: 'Pick characters on the left, then press Generate.' };
+export const PLACEHOLDER = { mark: '練', text: 'Pick characters on the left.' };
 
 export const strokes = n => plural(n, 'stroke');
 export const HIRAGANA = 'hiragana';

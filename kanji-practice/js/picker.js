@@ -1,4 +1,4 @@
-/* The "Characters" panel: a tab per grade, per kana syllabary, and one for
+/* The "Characters" panel: a tab per Kanken level, one for name kanji, per kana syllabary, and one for
  * pasting text. A tab is drawn once; selection changes only restyle its
  * buttons, so scrolling survives a click. Group buttons carry their characters
  * in data-g.
@@ -46,8 +46,10 @@ export function renderTabs() {
 
 /* --- tabs --- */
 
-const layout = ({ body, about = '' }) =>
-  `<div class="body">${body}</div>` + (about && `<p class="about">${about}</p>`);
+/* about: one paragraph, or a list of them. */
+const layout = ({ body, about = [] }) =>
+  `<div class="body">${body}</div>`
+  + (about.length ? `<div class="about">${[about].flat().map(p => `<p>${p}</p>`).join('')}</div>` : '');
 
 const SECTION = 50;   // kanji per numbered section
 
@@ -58,11 +60,11 @@ const allButton = (chars, title) => groupButton(chars, T.ALL(chars.length), titl
 const sectionedGrid = (chars, button = '') => `<div class="grid">${chars.map((char, i) =>
   (i % SECTION ? '' : header(`${i + 1}–${Math.min(i + SECTION, chars.length)}`, i ? '' : button)) + charButton(char)).join('')}</div>`;
 
-function gradeHtml(grade) {
-  const chars = [...GRADES[grade]];
+function groupHtml(group) {
+  const chars = [...GRADES[group]];
   return layout({
-    body: sectionedGrid(chars, allButton(chars, T.ALL_OF_GRADE)),
-    about: T.gradeAbout(grade, chars.length),
+    body: sectionedGrid(chars, allButton(chars, T.ALL_OF_GROUP)),
+    about: T.groupAbout(group, chars.length),
   });
 }
 
@@ -114,7 +116,7 @@ function pasteHtml(message = '', warn = false) {
 }
 
 export async function renderPicker() {
-  if (!T.TABS.some(([key]) => key === state.tab)) state.tab = 'grade1';   // saved by an older version
+  if (!T.TABS.some(([key]) => key === state.tab)) state.tab = 'kanken10';   // saved by an older version
   const tab = state.tab;
   if (tab === 'paste') { pickerEl.innerHTML = pasteHtml(); return; }
   if (tab === 'hira' || tab === 'kata') { pickerEl.innerHTML = kanaHtml(tab); return; }
@@ -122,7 +124,7 @@ export async function renderPicker() {
   let html;
   try {
     await ensureLoaded(GRADES[tab]);
-    html = gradeHtml(tab);
+    html = groupHtml(tab);
   } catch (error) {
     html = layout({ body: `<p class="note warn">${escapeHtml(error.message)}</p>` });
   }
