@@ -1,6 +1,6 @@
 /**
  * Every piece of text the scripts show, in one place. Labels that never change
- * are in index.html, credits and licenses in credits.js. Values containing
+ * are in renshucho.html, credits and licenses in credits.js. Values containing
  * markup are HTML, the rest plain text.
  */
 

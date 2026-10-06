@@ -67,7 +67,7 @@ export function load() {
   }
   Object.assign(state.settings, settings);
   /* The brush pen is paused, see js/sheet/brush.js. To bring it back, drop
-     this line and unhide its setting in index.html. */
+     this line and unhide its setting in renshucho.html. */
   state.settings.pen = 'liner';
 
   const isFirstVisit = !('selected' in saved);
