@@ -68,14 +68,14 @@ function groupHtml(group) {
   });
 }
 
-/* Six columns: the row button, then a i u e o. */
+/* Six columns: the row button, then a i u e o (unlabelled). */
 function kanaGridHtml(rows, script) {
   const convert = script === 'kata' ? toKatakana : (s => s);
   const cellsOf = chars => [...convert(chars)];
   const present = cells => cells.filter(c => c !== '_');
 
   const head = groupButton(rows.flatMap(([chars]) => present(cellsOf(chars))), T.KANA_ALL, T.KANA_ALL_OF_TABLE)
-    + T.KANA_COLUMNS.map(col => `<span class="col">${col}</span>`).join('');
+    + '<span></span>'.repeat(5);
 
   const body = rows.map(([chars, romaji]) => {
     const cells = cellsOf(chars);

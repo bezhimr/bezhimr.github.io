@@ -198,7 +198,6 @@ body[data-table-font="klee"] .ch { font-family: "Klee One", serif; font-size: 26
 .kana > .g { border: none; background: none; padding: 0 8px 0 0; text-align: right; font-size: 13px }
 .kana > .g:hover { text-decoration: underline }
 .kana > .g:first-child { align-self: end; padding-bottom: 4px }
-.kana .col { display: grid; place-items: end center; padding-bottom: 4px; color: var(--sub); font-size: 12px }
 
 textarea {
   display: block;

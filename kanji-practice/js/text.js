@@ -56,7 +56,6 @@ export const ALL_OF_GROUP = 'Select or clear the whole tab';
 
 export const KANA_ALL = 'All';
 export const KANA_ALL_OF_TABLE = 'Whole table';
-export const KANA_COLUMNS = ['a', 'i', 'u', 'e', 'o'];
 export const kanaRow = romaji => `Row ${romaji}`;
 export const DAKUTEN_HEADING = 'With dakuten and handakuten';
 
